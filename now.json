@@ -1,0 +1,16 @@
+{
+    "type": "static",
+    "build": {
+      "env": {
+        "CI": "true"
+      }
+    },
+    "static": {
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  }
