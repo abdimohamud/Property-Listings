@@ -30956,7 +30956,159 @@ var createRoute = function createRoute(basepath) {
 var shouldNavigate = function shouldNavigate(event) {
   return !event.defaultPrevented && event.button === 0 && !(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 }; ////////////////////////////////////////////////////////////////////////
-},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","invariant":"../node_modules/invariant/browser.js","create-react-context":"../node_modules/create-react-context/lib/index.js","react-lifecycles-compat":"../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js","./lib/utils":"../node_modules/@reach/router/es/lib/utils.js","./lib/history":"../node_modules/@reach/router/es/lib/history.js"}],"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","invariant":"../node_modules/invariant/browser.js","create-react-context":"../node_modules/create-react-context/lib/index.js","react-lifecycles-compat":"../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js","./lib/utils":"../node_modules/@reach/router/es/lib/utils.js","./lib/history":"../node_modules/@reach/router/es/lib/history.js"}],"context/PropertyListingsProvider.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PropertyListingsProvider = exports.PropertyListingsConsumer = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var DefaultState = {
+  propertyListings: [],
+  filter: {}
+};
+var PropertyListingsContext = React.createContext(DefaultState);
+var PropertyListingsConsumer = PropertyListingsContext.Consumer;
+exports.PropertyListingsConsumer = PropertyListingsConsumer;
+
+var PropertyListingsProvider = /*#__PURE__*/function (_React$Component) {
+  _inherits(PropertyListingsProvider, _React$Component);
+
+  var _super = _createSuper(PropertyListingsProvider);
+
+  function PropertyListingsProvider() {
+    var _this;
+
+    _classCallCheck(this, PropertyListingsProvider);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+    _this.state = DefaultState;
+    return _this;
+  }
+
+  _createClass(PropertyListingsProvider, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      fetch('/server/listings.json').then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        _this2.setState({
+          propertyListings: res
+        });
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var children = this.props.children;
+      var propertyListings = this.state.propertyListings;
+      return /*#__PURE__*/React.createElement(PropertyListingsContext.Provider, {
+        value: {
+          propertyListings: propertyListings
+        }
+      }, children);
+    }
+  }]);
+
+  return PropertyListingsProvider;
+}(React.Component); // export class PropertyListingsProvider extends React.Component {
+//   static applyFilter(listings, filter) {
+//     const { priceFrom, postcode, sortOrder } = filter
+//     let result = listings
+//     if (priceFrom) {
+//       const from = priceFrom
+//       result = result.filter(item => item.price >= from)
+//     }
+//     if (postcode) {
+//       result = result.filter(item => item.postcode.toLowerCase().startsWith(postcode))
+//     }
+//     if (sortOrder) {
+//       if (sortOrder === 'highestfirst') {
+//         result = result.sort((a, b) => b.price - a.price)
+//       }
+//       if (sortOrder === 'lowestfirst') {
+//         result = result.sort((a, b) => a.price - b.price)
+//       }
+//     }
+//     return result
+//   }
+//   state = DefaultState
+//   componentDidMount() {
+//     fetch('/server/listings.json')
+//       .then(res => res.json())
+//       .then(res => {
+//         this.setState({ propertyListings: res })
+//       })
+//   }
+//   getListingByPropertyId = propertyId => {
+//     const { propertyListings } = this.state
+//     return propertyListings.find(listing => listing.id === Number(propertyId))
+//   }
+//   updateFilter = filter => {
+//     this.setState({
+//       filter
+//     })
+//   }
+//   render() {
+//     const { children } = this.props
+//     const { propertyListings, filter } = this.state
+//     const filteredListings = PropertyListingsProvider.applyFilter(
+//       propertyListings,
+//       filter
+//     )
+//     return (
+//       <PropertyListingsContext.Provider
+//         value={{
+//           allListings: propertyListings,
+//           propertyListings: filteredListings,
+//           updateFilter: this.updateFilter,
+//           getListingByPropertyId: this.getListingByPropertyId
+//         }}
+//       >
+//         {children}
+//       </PropertyListingsContext.Provider>
+//     )
+//   }
+// }
+
+
+exports.PropertyListingsProvider = PropertyListingsProvider;
+},{"react":"../node_modules/react/index.js"}],"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -31126,6 +31278,8 @@ exports.default = void 0;
 
 var React = _interopRequireWildcard(require("react"));
 
+var _PropertyListingsProvider = require("../../context/PropertyListingsProvider");
+
 var _hero = _interopRequireDefault(require("../../components/hero"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -31135,12 +31289,19 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function Home() {
-  return /*#__PURE__*/React.createElement(_hero.default, null);
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_hero.default, null), /*#__PURE__*/React.createElement("div", {
+    className: "container"
+  }, /*#__PURE__*/React.createElement(_PropertyListingsProvider.PropertyListingsProvider, null, /*#__PURE__*/React.createElement(_PropertyListingsProvider.PropertyListingsConsumer, null, function (value) {
+    var propertyListings = value.propertyListings;
+    return /*#__PURE__*/React.createElement("ul", null, propertyListings.map(function (listing) {
+      return /*#__PURE__*/React.createElement("li", null, listing.title);
+    }));
+  }))));
 }
 
 var _default = Home;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../../components/hero":"components/hero/index.js"}],"components/map/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../../context/PropertyListingsProvider":"context/PropertyListingsProvider.js","../../components/hero":"components/hero/index.js"}],"components/map/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31325,7 +31486,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52301" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53007" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
