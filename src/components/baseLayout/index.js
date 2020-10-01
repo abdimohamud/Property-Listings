@@ -12,13 +12,13 @@ function BaseLayout({ children, miniHero = false }) {
         Developed By
         {' '}
         <a
-          href="https://twitter.com/jpreecedev"
+          href="https://github.com/abdimohamud/Property-Listings"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Jon Preece
+          Abdi Mohamud
         </a>
-        , 2019
+        , 2020
       </footer>
     </>
   )

@@ -31585,10 +31585,10 @@ function BaseLayout(_ref) {
   }), children), /*#__PURE__*/React.createElement("footer", {
     className: "text-center mb-5"
   }, "Developed By", ' ', /*#__PURE__*/React.createElement("a", {
-    href: "https://twitter.com/jpreecedev",
+    href: "https://github.com/abdimohamud/Property-Listings",
     target: "_blank",
     rel: "noopener noreferrer"
-  }, "Jon Preece"), ", 2019"));
+  }, "Abdi Mohamud"), ", 2020"));
 }
 
 var _default = BaseLayout;
@@ -31971,7 +31971,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53570" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54287" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
