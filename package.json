@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rm -rf .cache dist",
     "start": " parcel ./src/index.html",
-    "prod": "cross-env NODE_ENV=production npm run clean && parcel build ./src/index.html --no-source-maps",
+    "prod": "cross-env NODE_ENV=production npm run build && parcel build ./src/index.html --no-source-maps",
     "lint": "eslint ./src",
     "test": "jest",
     "test:watch": "jest --watch",
