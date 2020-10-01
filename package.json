@@ -22,10 +22,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jpreecedev/premium-property-finder.git"
+    "url": "git+https://github.com/abdimohamud/Property-Listings.git"
   },
   "bugs": {
-    "url": "https://github.com/jpreecedev/premium-property-finder/issues"
+    "url": "https://github.com/abdimohamud/Property-Listings/issues"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
