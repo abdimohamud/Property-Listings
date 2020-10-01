@@ -1,4 +1,5 @@
 import * as React from 'react'
+import Listing from '../../components/listing'
 import {
   PropertyListingsProvider,
   PropertyListingsConsumer
@@ -16,11 +17,11 @@ function Home() {
             {function(value) {
               const { propertyListings } = value
               return (
-                <ul>
-                  {propertyListings.map(listing => (
-                    <li>{listing.title}</li>
-                  ))}
-                </ul>
+              <div className="columns">
+                {propertyListings.map(listing => (
+                  <Listing listing={listing} key={listing.address}/>
+                ))}
+              </div>
               )
             }}
           </PropertyListingsConsumer>

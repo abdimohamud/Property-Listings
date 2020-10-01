@@ -30956,7 +30956,130 @@ var createRoute = function createRoute(basepath) {
 var shouldNavigate = function shouldNavigate(event) {
   return !event.defaultPrevented && event.button === 0 && !(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 }; ////////////////////////////////////////////////////////////////////////
-},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","invariant":"../node_modules/invariant/browser.js","create-react-context":"../node_modules/create-react-context/lib/index.js","react-lifecycles-compat":"../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js","./lib/utils":"../node_modules/@reach/router/es/lib/utils.js","./lib/history":"../node_modules/@reach/router/es/lib/history.js"}],"context/PropertyListingsProvider.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","invariant":"../node_modules/invariant/browser.js","create-react-context":"../node_modules/create-react-context/lib/index.js","react-lifecycles-compat":"../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js","./lib/utils":"../node_modules/@reach/router/es/lib/utils.js","./lib/history":"../node_modules/@reach/router/es/lib/history.js"}],"../node_modules/classnames/index.js":[function(require,module,exports) {
+var define;
+/*!
+  Copyright (c) 2017 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg) && arg.length) {
+				var inner = classNames.apply(null, arg);
+				if (inner) {
+					classes.push(inner);
+				}
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if (typeof module !== 'undefined' && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
+		// register as 'classnames', consistent with npm package name
+		define('classnames', [], function () {
+			return classNames;
+		});
+	} else {
+		window.classNames = classNames;
+	}
+}());
+
+},{}],"components/listing/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+var _router = require("@reach/router");
+
+var _classnames = _interopRequireDefault(require("classnames"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function Listing(_ref) {
+  var listing = _ref.listing;
+
+  if (!listing) {
+    return null;
+  }
+
+  var id = listing.id,
+      image = listing.image,
+      title = listing.title,
+      address = listing.address,
+      description = listing.description,
+      price = listing.price;
+  var columnClasses = (0, _classnames.default)('column', 'col-4', 'col-xs-12');
+  var cardClasses = (0, _classnames.default)('card');
+  return /*#__PURE__*/React.createElement("div", {
+    className: columnClasses,
+    style: {
+      margin: '1rem 0'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: cardClasses
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card-image"
+  }, /*#__PURE__*/React.createElement("img", {
+    className: "img-responsive",
+    src: "/server/".concat(image),
+    alt: address
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "card-header"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card-title h5"
+  }, title), /*#__PURE__*/React.createElement("div", {
+    className: "card-title h6"
+  }, "\xA3 ", price), /*#__PURE__*/React.createElement("div", {
+    className: "card-subtitle text-gray"
+  }, address)), /*#__PURE__*/React.createElement("div", {
+    className: "card-body"
+  }, description), /*#__PURE__*/React.createElement("div", {
+    className: "card-footer"
+  }, /*#__PURE__*/React.createElement(_router.Link, {
+    className: "btn btn-primary",
+    to: "/details/".concat(id)
+  }, "Go to property"))));
+}
+
+var _default = Listing;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","@reach/router":"../node_modules/@reach/router/es/index.js","classnames":"../node_modules/classnames/index.js"}],"context/PropertyListingsProvider.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31180,62 +31303,7 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"./..\\..\\images\\hero.jpg":[["hero.0f0b5fd4.jpg","images/hero.jpg"],"images/hero.jpg"],"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../node_modules/classnames/index.js":[function(require,module,exports) {
-var define;
-/*!
-  Copyright (c) 2017 Jed Watson.
-  Licensed under the MIT License (MIT), see
-  http://jedwatson.github.io/classnames
-*/
-/* global define */
-
-(function () {
-	'use strict';
-
-	var hasOwn = {}.hasOwnProperty;
-
-	function classNames () {
-		var classes = [];
-
-		for (var i = 0; i < arguments.length; i++) {
-			var arg = arguments[i];
-			if (!arg) continue;
-
-			var argType = typeof arg;
-
-			if (argType === 'string' || argType === 'number') {
-				classes.push(arg);
-			} else if (Array.isArray(arg) && arg.length) {
-				var inner = classNames.apply(null, arg);
-				if (inner) {
-					classes.push(inner);
-				}
-			} else if (argType === 'object') {
-				for (var key in arg) {
-					if (hasOwn.call(arg, key) && arg[key]) {
-						classes.push(key);
-					}
-				}
-			}
-		}
-
-		return classes.join(' ');
-	}
-
-	if (typeof module !== 'undefined' && module.exports) {
-		classNames.default = classNames;
-		module.exports = classNames;
-	} else if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
-		// register as 'classnames', consistent with npm package name
-		define('classnames', [], function () {
-			return classNames;
-		});
-	} else {
-		window.classNames = classNames;
-	}
-}());
-
-},{}],"components/hero/index.js":[function(require,module,exports) {
+},{"./..\\..\\images\\hero.jpg":[["hero.0f0b5fd4.jpg","images/hero.jpg"],"images/hero.jpg"],"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"components/hero/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31278,6 +31346,8 @@ exports.default = void 0;
 
 var React = _interopRequireWildcard(require("react"));
 
+var _listing = _interopRequireDefault(require("../../components/listing"));
+
 var _PropertyListingsProvider = require("../../context/PropertyListingsProvider");
 
 var _hero = _interopRequireDefault(require("../../components/hero"));
@@ -31293,15 +31363,20 @@ function Home() {
     className: "container"
   }, /*#__PURE__*/React.createElement(_PropertyListingsProvider.PropertyListingsProvider, null, /*#__PURE__*/React.createElement(_PropertyListingsProvider.PropertyListingsConsumer, null, function (value) {
     var propertyListings = value.propertyListings;
-    return /*#__PURE__*/React.createElement("ul", null, propertyListings.map(function (listing) {
-      return /*#__PURE__*/React.createElement("li", null, listing.title);
+    return /*#__PURE__*/React.createElement("div", {
+      className: "columns"
+    }, propertyListings.map(function (listing) {
+      return /*#__PURE__*/React.createElement(_listing.default, {
+        listing: listing,
+        key: listing.address
+      });
     }));
   }))));
 }
 
 var _default = Home;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../../context/PropertyListingsProvider":"context/PropertyListingsProvider.js","../../components/hero":"components/hero/index.js"}],"components/map/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../../components/listing":"components/listing/index.js","../../context/PropertyListingsProvider":"context/PropertyListingsProvider.js","../../components/hero":"components/hero/index.js"}],"components/map/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
