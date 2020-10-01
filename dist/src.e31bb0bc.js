@@ -31311,9 +31311,9 @@ exports.default = void 0;
 
 var React = _interopRequireWildcard(require("react"));
 
-var _stylesModule = _interopRequireDefault(require("./styles.module.css"));
+var _classnames2 = _interopRequireDefault(require("classnames"));
 
-var _classnames = _interopRequireDefault(require("classnames"));
+var _stylesModule = _interopRequireDefault(require("./styles.module.css"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31321,10 +31321,17 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-function Hero() {
-  var classes = (0, _classnames.default)('hero', 'hero-lg', 'mb-3', _stylesModule.default.hero);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function Hero(_ref) {
+  var _classnames;
+
+  var miniHero = _ref.miniHero;
+  var classes = (0, _classnames2.default)(_stylesModule.default.hero, 'hero', 'mb-3', (_classnames = {
+    'hero-sm': miniHero
+  }, _defineProperty(_classnames, _stylesModule.default.miniHero, miniHero), _defineProperty(_classnames, 'hero-lg', !miniHero), _classnames));
   return /*#__PURE__*/React.createElement("div", {
-    className: "hero hero-lg mb-3"
+    className: classes
   }, /*#__PURE__*/React.createElement("div", {
     className: "hero-body text-center text-light"
   }, /*#__PURE__*/React.createElement("h1", null, "Premium Property Finder"), /*#__PURE__*/React.createElement("p", {
@@ -31334,7 +31341,7 @@ function Hero() {
 
 var _default = Hero;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","./styles.module.css":"components/hero/styles.module.css","classnames":"../node_modules/classnames/index.js"}],"components/filter/styles.module.css":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","classnames":"../node_modules/classnames/index.js","./styles.module.css":"components/hero/styles.module.css"}],"components/filter/styles.module.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -31890,6 +31897,8 @@ var _PropertyListingsProvider = require("../../context/PropertyListingsProvider"
 
 var _propertyDetails = _interopRequireDefault(require("../../components/propertyDetails"));
 
+var _hero = _interopRequireDefault(require("../../components/hero"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
@@ -31898,19 +31907,21 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function Details(_ref) {
   var propertyId = _ref.propertyId;
-  return /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_hero.default, {
+    miniHero: true
+  }), /*#__PURE__*/React.createElement("div", {
     className: "container"
   }, /*#__PURE__*/React.createElement(_PropertyListingsProvider.PropertyListingsProvider, null, /*#__PURE__*/React.createElement(_PropertyListingsProvider.PropertyListingsConsumer, null, function (_ref2) {
     var getListingByPropertyId = _ref2.getListingByPropertyId;
     return /*#__PURE__*/React.createElement(_propertyDetails.default, {
       listing: getListingByPropertyId(propertyId)
     });
-  })));
+  }))));
 }
 
 var _default = Details;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../../context/PropertyListingsProvider":"context/PropertyListingsProvider.js","../../components/propertyDetails":"components/propertyDetails/index.js"}],"index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../../context/PropertyListingsProvider":"context/PropertyListingsProvider.js","../../components/propertyDetails":"components/propertyDetails/index.js","../../components/hero":"components/hero/index.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));

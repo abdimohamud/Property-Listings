@@ -6,18 +6,23 @@ import {
 } from '../../context/PropertyListingsProvider'
 
 import PropertyDetails from '../../components/propertyDetails'
+import Hero from '../../components/hero'
 
 function Details({ propertyId }) {
   return (
-    <div className="container">
-      <PropertyListingsProvider>
-        <PropertyListingsConsumer>
-          {({ getListingByPropertyId }) => (
-            <PropertyDetails listing={getListingByPropertyId(propertyId)} />
-          )}
-        </PropertyListingsConsumer>
-      </PropertyListingsProvider>
-    </div>
+    <React.Fragment>
+      <Hero miniHero/>
+      <div className="container">
+        <PropertyListingsProvider>
+          <PropertyListingsConsumer>
+            {({ getListingByPropertyId }) => (
+              <PropertyDetails listing={getListingByPropertyId(propertyId)} />
+            )}
+          </PropertyListingsConsumer>
+        </PropertyListingsProvider>
+      </div>      
+    </React.Fragment>
+
   )
 }
 
