@@ -31139,6 +31139,20 @@ var PropertyListingsProvider = /*#__PURE__*/function (_React$Component) {
 
     _this = _super.call.apply(_super, [this].concat(args));
     _this.state = DefaultState;
+
+    _this.getListingByPropertyId = function (propertyId) {
+      var propertyListings = _this.state.propertyListings;
+      return propertyListings.find(function (listing) {
+        return listing.id === Number(propertyId);
+      });
+    };
+
+    _this.updateFilter = function (filter) {
+      _this.setState({
+        filter: filter
+      });
+    };
+
     return _this;
   }
 
@@ -31159,76 +31173,60 @@ var PropertyListingsProvider = /*#__PURE__*/function (_React$Component) {
     key: "render",
     value: function render() {
       var children = this.props.children;
-      var propertyListings = this.state.propertyListings;
+      var _this$state = this.state,
+          propertyListings = _this$state.propertyListings,
+          filter = _this$state.filter;
+      var filteredListings = PropertyListingsProvider.applyFilter(propertyListings, filter);
       return /*#__PURE__*/React.createElement(PropertyListingsContext.Provider, {
         value: {
-          propertyListings: propertyListings
+          allListings: propertyListings,
+          propertyListings: filteredListings,
+          updateFilter: this.updateFilter,
+          getListingByPropertyId: this.getListingByPropertyId
         }
       }, children);
+    }
+  }], [{
+    key: "applyFilter",
+    value: function applyFilter(listings, filter) {
+      var priceFrom = filter.priceFrom,
+          postcode = filter.postcode,
+          sortOrder = filter.sortOrder;
+      var result = listings;
+
+      if (priceFrom) {
+        var from = priceFrom;
+        result = result.filter(function (item) {
+          return item.price >= from;
+        });
+      }
+
+      if (postcode) {
+        result = result.filter(function (item) {
+          return item.postcode.toLowerCase().startsWith(postcode);
+        });
+      }
+
+      if (sortOrder) {
+        if (sortOrder === 'highestfirst') {
+          result = result.sort(function (a, b) {
+            return b.price - a.price;
+          });
+        }
+
+        if (sortOrder === 'lowestfirst') {
+          result = result.sort(function (a, b) {
+            return a.price - b.price;
+          });
+        }
+      }
+
+      return result;
     }
   }]);
 
   return PropertyListingsProvider;
-}(React.Component); // export class PropertyListingsProvider extends React.Component {
-//   static applyFilter(listings, filter) {
-//     const { priceFrom, postcode, sortOrder } = filter
-//     let result = listings
-//     if (priceFrom) {
-//       const from = priceFrom
-//       result = result.filter(item => item.price >= from)
-//     }
-//     if (postcode) {
-//       result = result.filter(item => item.postcode.toLowerCase().startsWith(postcode))
-//     }
-//     if (sortOrder) {
-//       if (sortOrder === 'highestfirst') {
-//         result = result.sort((a, b) => b.price - a.price)
-//       }
-//       if (sortOrder === 'lowestfirst') {
-//         result = result.sort((a, b) => a.price - b.price)
-//       }
-//     }
-//     return result
-//   }
-//   state = DefaultState
-//   componentDidMount() {
-//     fetch('/server/listings.json')
-//       .then(res => res.json())
-//       .then(res => {
-//         this.setState({ propertyListings: res })
-//       })
-//   }
-//   getListingByPropertyId = propertyId => {
-//     const { propertyListings } = this.state
-//     return propertyListings.find(listing => listing.id === Number(propertyId))
-//   }
-//   updateFilter = filter => {
-//     this.setState({
-//       filter
-//     })
-//   }
-//   render() {
-//     const { children } = this.props
-//     const { propertyListings, filter } = this.state
-//     const filteredListings = PropertyListingsProvider.applyFilter(
-//       propertyListings,
-//       filter
-//     )
-//     return (
-//       <PropertyListingsContext.Provider
-//         value={{
-//           allListings: propertyListings,
-//           propertyListings: filteredListings,
-//           updateFilter: this.updateFilter,
-//           getListingByPropertyId: this.getListingByPropertyId
-//         }}
-//       >
-//         {children}
-//       </PropertyListingsContext.Provider>
-//     )
-//   }
-// }
-
+}(React.Component);
 
 exports.PropertyListingsProvider = PropertyListingsProvider;
 },{"react":"../node_modules/react/index.js"}],"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
@@ -31336,7 +31334,259 @@ function Hero() {
 
 var _default = Hero;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","./styles.module.css":"components/hero/styles.module.css","classnames":"../node_modules/classnames/index.js"}],"pages/Home/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./styles.module.css":"components/hero/styles.module.css","classnames":"../node_modules/classnames/index.js"}],"components/filter/styles.module.css":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"components/filter/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+var _classnames = _interopRequireDefault(require("classnames"));
+
+var _stylesModule = _interopRequireDefault(require("./styles.module.css"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function getSortOrderValue(sortOrder) {
+  return sortOrder.replace(' ', '').toLowerCase();
+}
+
+function getPropertiesDisplayText(count) {
+  if (count > 1 || count === 0) {
+    return 'properties';
+  }
+
+  return 'property';
+}
+
+var DefaultState = {
+  priceFrom: '',
+  postcode: '',
+  sortOrder: '',
+  sortOrders: ['Highest First', 'Lowest First']
+};
+
+var Filter = /*#__PURE__*/function (_React$Component) {
+  _inherits(Filter, _React$Component);
+
+  var _super = _createSuper(Filter);
+
+  function Filter() {
+    var _this;
+
+    _classCallCheck(this, Filter);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+    _this.state = Object.assign({}, DefaultState);
+
+    _this.handleChange = function (prop, value) {
+      _this.setState(_defineProperty({}, prop, value));
+    };
+
+    return _this;
+  }
+
+  _createClass(Filter, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var containerClasses = (0, _classnames.default)('container', 'mb-1', _stylesModule.default.container);
+      var formClasses = (0, _classnames.default)('form-horizontal', _stylesModule.default.form);
+      var _this$state = this.state,
+          priceFrom = _this$state.priceFrom,
+          postcode = _this$state.postcode,
+          sortOrder = _this$state.sortOrder,
+          sortOrders = _this$state.sortOrders;
+      var _this$props = this.props,
+          postcodes = _this$props.postcodes,
+          count = _this$props.count,
+          updateFilter = _this$props.updateFilter;
+      return /*#__PURE__*/React.createElement("aside", {
+        className: "mt-2"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: containerClasses
+      }, /*#__PURE__*/React.createElement("h2", {
+        "data-cy": "property-count"
+      }, "".concat(count, " private ").concat(getPropertiesDisplayText(count), " for sale")), /*#__PURE__*/React.createElement("form", {
+        onChange: function onChange() {
+          return setTimeout(function () {
+            return updateFilter(_this2.state);
+          }, 0);
+        },
+        className: formClasses,
+        noValidate: true
+      }, /*#__PURE__*/React.createElement("p", {
+        className: "mb-1"
+      }, "Refine your results", /*#__PURE__*/React.createElement("button", {
+        "data-cy": "clear-button",
+        className: "ml-1 btn btn-sm",
+        type: "button",
+        onClick: function onClick() {
+          _this2.setState(Object.assign({}, DefaultState));
+
+          updateFilter({});
+        }
+      }, "Clear")), /*#__PURE__*/React.createElement("div", {
+        className: "columns text-center"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "column col-4 col-xs-12"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "form-group"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "col-3 col-sm-12"
+      }, /*#__PURE__*/React.createElement("label", {
+        className: "form-label",
+        htmlFor: "price-from"
+      }, "Price from")), /*#__PURE__*/React.createElement("div", {
+        className: "col-9 col-sm-12"
+      }, /*#__PURE__*/React.createElement("input", {
+        className: "form-input",
+        min: "0",
+        max: "10000000",
+        type: "number",
+        id: "price-from",
+        placeholder: "\xA31,000,000",
+        value: priceFrom,
+        onChange: function onChange(event) {
+          return _this2.handleChange('priceFrom', Number(event.target.value));
+        }
+      })))), /*#__PURE__*/React.createElement("div", {
+        className: "column col-4 col-xs-12"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "form-group"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "col-3 col-sm-12"
+      }, /*#__PURE__*/React.createElement("label", {
+        className: "form-label",
+        htmlFor: "postcode"
+      }, "Postcode")), /*#__PURE__*/React.createElement("div", {
+        className: "col-9 col-sm-12"
+      }, /*#__PURE__*/React.createElement("select", {
+        className: "form-select",
+        id: "postcode",
+        value: postcode,
+        onChange: function onChange(event) {
+          return _this2.handleChange('postcode', event.target.value);
+        }
+      }, /*#__PURE__*/React.createElement("option", {
+        value: ""
+      }, "Choose..."), postcodes.map(function (pc) {
+        return /*#__PURE__*/React.createElement("option", {
+          value: pc.toLowerCase()
+        }, pc);
+      }))))), /*#__PURE__*/React.createElement("div", {
+        className: "column col-4 col-xs-12"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "form-group"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "col-3 col-sm-12"
+      }, /*#__PURE__*/React.createElement("label", {
+        className: "form-label",
+        htmlFor: "sortorder"
+      }, "Sort Order")), /*#__PURE__*/React.createElement("div", {
+        className: "col-9 col-sm-12"
+      }, /*#__PURE__*/React.createElement("select", {
+        className: "form-select",
+        id: "sortorder",
+        value: sortOrder,
+        onChange: function onChange(event) {
+          return _this2.handleChange('sortOrder', event.target.value);
+        }
+      }, /*#__PURE__*/React.createElement("option", {
+        value: ""
+      }, "Choose..."), sortOrders.map(function (order) {
+        return /*#__PURE__*/React.createElement("option", {
+          value: getSortOrderValue(order)
+        }, order);
+      })))))))));
+    }
+  }]);
+
+  return Filter;
+}(React.Component);
+
+var _default = Filter;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","classnames":"../node_modules/classnames/index.js","./styles.module.css":"components/filter/styles.module.css"}],"components/baseLayout/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+var _hero = _interopRequireDefault(require("../hero"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function BaseLayout(_ref) {
+  var children = _ref.children,
+      _ref$miniHero = _ref.miniHero,
+      miniHero = _ref$miniHero === void 0 ? false : _ref$miniHero;
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("main", {
+    role: "main",
+    className: "mb-3"
+  }, /*#__PURE__*/React.createElement(_hero.default, {
+    miniHero: miniHero
+  }), children), /*#__PURE__*/React.createElement("footer", {
+    className: "text-center mb-5"
+  }, "Developed By", ' ', /*#__PURE__*/React.createElement("a", {
+    href: "https://twitter.com/jpreecedev",
+    target: "_blank",
+    rel: "noopener noreferrer"
+  }, "Jon Preece"), ", 2019"));
+}
+
+var _default = BaseLayout;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","../hero":"components/hero/index.js"}],"pages/Home/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31352,6 +31602,10 @@ var _PropertyListingsProvider = require("../../context/PropertyListingsProvider"
 
 var _hero = _interopRequireDefault(require("../../components/hero"));
 
+var _filter = _interopRequireDefault(require("../../components/filter"));
+
+var _baseLayout = _interopRequireDefault(require("../../components/baseLayout"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
@@ -31359,58 +31613,33 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function Home() {
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_hero.default, null), /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React.createElement(_baseLayout.default, null, /*#__PURE__*/React.createElement("div", {
     className: "container"
-  }, /*#__PURE__*/React.createElement(_PropertyListingsProvider.PropertyListingsProvider, null, /*#__PURE__*/React.createElement(_PropertyListingsProvider.PropertyListingsConsumer, null, function (value) {
-    var propertyListings = value.propertyListings;
-    return /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement(_PropertyListingsProvider.PropertyListingsProvider, null, /*#__PURE__*/React.createElement(_PropertyListingsProvider.PropertyListingsConsumer, null, function (_ref) {
+    var propertyListings = _ref.propertyListings,
+        allListings = _ref.allListings,
+        updateFilter = _ref.updateFilter;
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_filter.default, {
+      updateFilter: updateFilter,
+      count: propertyListings.length,
+      postcodes: allListings.map(function (listing) {
+        return listing.postcode.split(' ')[0];
+      }).filter(function (item, i, arr) {
+        return arr.indexOf(item) === i;
+      })
+    }), /*#__PURE__*/React.createElement("div", {
       className: "columns"
     }, propertyListings.map(function (listing) {
       return /*#__PURE__*/React.createElement(_listing.default, {
-        listing: listing,
-        key: listing.address
+        listing: listing
       });
-    }));
+    })));
   }))));
 }
 
 var _default = Home;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../../components/listing":"components/listing/index.js","../../context/PropertyListingsProvider":"context/PropertyListingsProvider.js","../../components/hero":"components/hero/index.js"}],"components/map/index.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function Map() {
-  var address = "Mason Street, Manchester, Greater Manchester, M4";
-  var search = "https://maps.google.com/maps?q=".concat(address, "&t=&z=16&ie=UTF8&iwloc=&output=embed");
-  return /*#__PURE__*/_react.default.createElement("div", {
-    className: "mapouter"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "gmap_canvas"
-  }, /*#__PURE__*/_react.default.createElement("iframe", {
-    title: address,
-    src: search,
-    width: "100%",
-    height: "500",
-    id: "gmap_canvas",
-    frameBorder: "0",
-    scrolling: "no",
-    marginHeight: "0",
-    marginWidth: "0"
-  })));
-}
-
-var _default = Map;
-exports.default = _default;
-},{"react":"../node_modules/react/index.js"}],"components/keyFeatures/styles.module.css":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../../components/listing":"components/listing/index.js","../../context/PropertyListingsProvider":"context/PropertyListingsProvider.js","../../components/hero":"components/hero/index.js","../../components/filter":"components/filter/index.js","../../components/baseLayout":"components/baseLayout/index.js"}],"components/keyFeatures/styles.module.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -31481,7 +31710,7 @@ var KeyFeatures = /*#__PURE__*/function (_React$Component) {
 
 var _default = KeyFeatures;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","./styles.module.css":"components/keyFeatures/styles.module.css"}],"pages/Details/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./styles.module.css":"components/keyFeatures/styles.module.css"}],"components/gallery/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31491,9 +31720,175 @@ exports.default = void 0;
 
 var React = _interopRequireWildcard(require("react"));
 
-var _map = _interopRequireDefault(require("../../components/map/"));
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
-var _keyFeatures = _interopRequireDefault(require("../../components/keyFeatures"));
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function Gallery(_ref) {
+  var image = _ref.image,
+      title = _ref.title;
+  return /*#__PURE__*/React.createElement("figure", {
+    className: "figure"
+  }, /*#__PURE__*/React.createElement("img", {
+    className: "img-responsive",
+    src: "/server/".concat(image),
+    alt: title
+  }), /*#__PURE__*/React.createElement("figcaption", {
+    className: "figure-caption text-center text-small"
+  }, title));
+}
+
+var _default = Gallery;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js"}],"components/map/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function Map() {
+  var address = "Mason Street, Manchester, Greater Manchester, M4";
+  var search = "https://maps.google.com/maps?q=".concat(address, "&t=&z=16&ie=UTF8&iwloc=&output=embed");
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "mapouter"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "gmap_canvas"
+  }, /*#__PURE__*/_react.default.createElement("iframe", {
+    title: address,
+    src: search,
+    width: "100%",
+    height: "500",
+    id: "gmap_canvas",
+    frameBorder: "0",
+    scrolling: "no",
+    marginHeight: "0",
+    marginWidth: "0"
+  })));
+}
+
+var _default = Map;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js"}],"utils/number.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.asCurrency = asCurrency;
+
+/* eslint-disable import/prefer-default-export */
+function asCurrency(amount) {
+  if (!amount) {
+    return '';
+  }
+
+  return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+},{}],"components/propertyDetails/styles.module.css":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"components/propertyDetails/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+var _classnames = _interopRequireDefault(require("classnames"));
+
+var _keyFeatures = _interopRequireDefault(require("../keyFeatures"));
+
+var _gallery = _interopRequireDefault(require("../gallery"));
+
+var _map = _interopRequireDefault(require("../map"));
+
+var _number = require("../../utils/number");
+
+var _stylesModule = _interopRequireDefault(require("./styles.module.css"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function PropertyDetails(_ref) {
+  var listing = _ref.listing;
+
+  if (!listing) {
+    return null;
+  }
+
+  var image = listing.image,
+      title = listing.title,
+      address = listing.address,
+      description = listing.description,
+      price = listing.price,
+      features = listing.features,
+      details = listing.details;
+  var priceClasses = (0, _classnames.default)(_stylesModule.default.price, 'text-success', 'text-right');
+  return /*#__PURE__*/React.createElement("div", {
+    className: _stylesModule.default.container
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "columns"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "column col-9 col-xs-12"
+  }, /*#__PURE__*/React.createElement("h2", null, title), /*#__PURE__*/React.createElement("h3", {
+    className: "text-dark text-small mb-1"
+  }, description)), /*#__PURE__*/React.createElement("div", {
+    className: "column col-3 col-xs-12"
+  }, /*#__PURE__*/React.createElement("h5", {
+    className: priceClasses
+  }, /*#__PURE__*/React.createElement("small", null, "Priced from"), /*#__PURE__*/React.createElement("br", null), "\xA3", (0, _number.asCurrency)(price)))), /*#__PURE__*/React.createElement("div", {
+    className: "columns"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "column col-6 col-xs-12"
+  }, /*#__PURE__*/React.createElement(_gallery.default, {
+    image: image,
+    title: title
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "column col-6 col-xs-12"
+  }, /*#__PURE__*/React.createElement(_keyFeatures.default, {
+    features: features
+  }))), /*#__PURE__*/React.createElement("p", {
+    className: "text-bold mt-3"
+  }, "Full Details"), details.map(function (detail) {
+    return /*#__PURE__*/React.createElement("p", {
+      key: detail
+    }, detail);
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "text-bold mt-3"
+  }, "Map"), /*#__PURE__*/React.createElement(_map.default, {
+    address: address
+  }));
+}
+
+var _default = PropertyDetails;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","classnames":"../node_modules/classnames/index.js","../keyFeatures":"components/keyFeatures/index.js","../gallery":"components/gallery/index.js","../map":"components/map/index.js","../../utils/number":"utils/number.js","./styles.module.css":"components/propertyDetails/styles.module.css"}],"pages/Details/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+var _PropertyListingsProvider = require("../../context/PropertyListingsProvider");
+
+var _propertyDetails = _interopRequireDefault(require("../../components/propertyDetails"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31503,15 +31898,19 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function Details(_ref) {
   var propertyId = _ref.propertyId;
-  var features = ['Help to Buy available, ideal for first time buyers', 'Within walking distance of the Northern Quarter, Ancoats & NOMA', 'Exposed brickwork retaining the charm of the existing building', 'Cycle storage', 'Victorian Mill conversion', '13 unique 1,2 and 3 bed apartments available'];
-  return /*#__PURE__*/React.createElement("div", null, "Show details for property with Id of ", propertyId, /*#__PURE__*/React.createElement(_keyFeatures.default, {
-    features: features
-  }), /*#__PURE__*/React.createElement(_map.default, null));
+  return /*#__PURE__*/React.createElement("div", {
+    className: "container"
+  }, /*#__PURE__*/React.createElement(_PropertyListingsProvider.PropertyListingsProvider, null, /*#__PURE__*/React.createElement(_PropertyListingsProvider.PropertyListingsConsumer, null, function (_ref2) {
+    var getListingByPropertyId = _ref2.getListingByPropertyId;
+    return /*#__PURE__*/React.createElement(_propertyDetails.default, {
+      listing: getListingByPropertyId(propertyId)
+    });
+  })));
 }
 
 var _default = Details;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../../components/map/":"components/map/index.js","../../components/keyFeatures":"components/keyFeatures/index.js"}],"index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../../context/PropertyListingsProvider":"context/PropertyListingsProvider.js","../../components/propertyDetails":"components/propertyDetails/index.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -31561,7 +31960,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53007" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53570" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

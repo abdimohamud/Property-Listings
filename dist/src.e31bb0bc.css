@@ -10,9 +10,27 @@
       background-position-y: -150px;
     }
   }
+.form {
+    padding: 20px;
+    background-color: #f7f8f9;
+    border-radius: 0.2rem;
+  }
+  
+  .container {
+    padding: 0;
+  }
 .list {
     text-align: left;
   }
   
+.price {
+  font-size: 20px;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 976px;
+}
+
 
 /*# sourceMappingURL=/src.e31bb0bc.css.map */

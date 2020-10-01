@@ -1,0 +1,1 @@
+{"version":3,"sources":["global.css"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA;AACA;AACA","file":"global.e50bbfba.css","sourceRoot":"..\\src","sourcesContent":[".container {\r\n    max-width: 1200px;\r\n  }\r\n  \r\n  .text-small {\r\n    font-size: small;\r\n  }"]}

@@ -33,7 +33,8 @@
     "@babel/preset-react": "^7.10.4",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-static-files-copy": "^2.5.0",
-    "postcss-modules": "^3.2.2"
+    "postcss-modules": "^3.2.2",
+    "sass": "^1.26.11"
   },
   "staticPath": "public"
 }

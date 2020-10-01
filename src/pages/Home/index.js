@@ -6,28 +6,35 @@ import {
 } from '../../context/PropertyListingsProvider'
 
 import Hero from '../../components/hero'
+import Filter from '../../components/filter'
+import BaseLayout from '../../components/baseLayout'
 
 function Home() {
   return (
-    <React.Fragment>
-      <Hero />
+    <BaseLayout>
       <div className="container">
-        <PropertyListingsProvider >
+        <PropertyListingsProvider>
           <PropertyListingsConsumer>
-            {function(value) {
-              const { propertyListings } = value
-              return (
-              <div className="columns">
-                {propertyListings.map(listing => (
-                  <Listing listing={listing} key={listing.address}/>
-                ))}
-              </div>
-              )
-            }}
+            {({ propertyListings, allListings, updateFilter }) => (
+              <>
+                <Filter
+                  updateFilter={updateFilter}
+                  count={propertyListings.length}
+                  postcodes={allListings
+                    .map(listing => listing.postcode.split(' ')[0])
+                    .filter((item, i, arr) => arr.indexOf(item) === i)}
+                />
+                <div className="columns">
+                  {propertyListings.map(listing => (
+                    <Listing listing={listing} />
+                  ))}
+                </div>
+              </>
+            )}
           </PropertyListingsConsumer>
         </PropertyListingsProvider>
       </div>
-    </React.Fragment>
+    </BaseLayout>
   )
 }
 

@@ -8,97 +8,70 @@ const DefaultState = {
 const PropertyListingsContext = React.createContext(DefaultState)
 
 export const PropertyListingsConsumer = PropertyListingsContext.Consumer
+
 export class PropertyListingsProvider extends React.Component {
-    state = DefaultState
-  
-    componentDidMount() {
-      fetch('/server/listings.json')
-        .then(res => res.json())
-        .then(res => {
-          this.setState({ propertyListings: res })
-        })
+  static applyFilter(listings, filter) {
+    const { priceFrom, postcode, sortOrder } = filter
+    let result = listings
+    if (priceFrom) {
+      const from = priceFrom
+      result = result.filter(item => item.price >= from)
     }
-  
-    render() {
-      const { children } = this.props
-      const { propertyListings } = this.state
-  
-      return (
-        <PropertyListingsContext.Provider
-          value={{
-            propertyListings
-          }}
-        >
-          {children}
-        </PropertyListingsContext.Provider>
-      )
+    if (postcode) {
+      result = result.filter(item => item.postcode.toLowerCase().startsWith(postcode))
     }
+    if (sortOrder) {
+      if (sortOrder === 'highestfirst') {
+        result = result.sort((a, b) => b.price - a.price)
+      }
+      if (sortOrder === 'lowestfirst') {
+        result = result.sort((a, b) => a.price - b.price)
+      }
+    }
+    return result
   }
 
+  state = DefaultState
 
-// export class PropertyListingsProvider extends React.Component {
-//   static applyFilter(listings, filter) {
-//     const { priceFrom, postcode, sortOrder } = filter
-//     let result = listings
-//     if (priceFrom) {
-//       const from = priceFrom
-//       result = result.filter(item => item.price >= from)
-//     }
-//     if (postcode) {
-//       result = result.filter(item => item.postcode.toLowerCase().startsWith(postcode))
-//     }
-//     if (sortOrder) {
-//       if (sortOrder === 'highestfirst') {
-//         result = result.sort((a, b) => b.price - a.price)
-//       }
-//       if (sortOrder === 'lowestfirst') {
-//         result = result.sort((a, b) => a.price - b.price)
-//       }
-//     }
-//     return result
-//   }
+  componentDidMount() {
+    fetch('/server/listings.json')
+      .then(res => res.json())
+      .then(res => {
+        this.setState({ propertyListings: res })
+      })
+  }
 
-//   state = DefaultState
+  getListingByPropertyId = propertyId => {
+    const { propertyListings } = this.state
+    return propertyListings.find(listing => listing.id === Number(propertyId))
+  }
 
-//   componentDidMount() {
-//     fetch('/server/listings.json')
-//       .then(res => res.json())
-//       .then(res => {
-//         this.setState({ propertyListings: res })
-//       })
-//   }
+  updateFilter = filter => {
+    this.setState({
+      filter
+    })
+  }
 
-//   getListingByPropertyId = propertyId => {
-//     const { propertyListings } = this.state
-//     return propertyListings.find(listing => listing.id === Number(propertyId))
-//   }
+  render() {
+    const { children } = this.props
+    const { propertyListings, filter } = this.state
 
-//   updateFilter = filter => {
-//     this.setState({
-//       filter
-//     })
-//   }
+    const filteredListings = PropertyListingsProvider.applyFilter(
+      propertyListings,
+      filter
+    )
 
-//   render() {
-//     const { children } = this.props
-//     const { propertyListings, filter } = this.state
-
-//     const filteredListings = PropertyListingsProvider.applyFilter(
-//       propertyListings,
-//       filter
-//     )
-
-//     return (
-//       <PropertyListingsContext.Provider
-//         value={{
-//           allListings: propertyListings,
-//           propertyListings: filteredListings,
-//           updateFilter: this.updateFilter,
-//           getListingByPropertyId: this.getListingByPropertyId
-//         }}
-//       >
-//         {children}
-//       </PropertyListingsContext.Provider>
-//     )
-//   }
-// }
+    return (
+      <PropertyListingsContext.Provider
+        value={{
+          allListings: propertyListings,
+          propertyListings: filteredListings,
+          updateFilter: this.updateFilter,
+          getListingByPropertyId: this.getListingByPropertyId
+        }}
+      >
+        {children}
+      </PropertyListingsContext.Provider>
+    )
+  }
+}
