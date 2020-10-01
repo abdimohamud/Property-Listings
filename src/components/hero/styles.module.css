@@ -1,5 +1,5 @@
 .hero {
-    background-image: url('/hero.0f0b5fd4.jpg');
+    background-image: url('../../images/hero.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: scroll;
@@ -10,9 +10,3 @@
       background-position-y: -150px;
     }
   }
-.list {
-    text-align: left;
-  }
-  
-
-/*# sourceMappingURL=/src.e31bb0bc.css.map */
