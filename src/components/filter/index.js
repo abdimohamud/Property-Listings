@@ -103,8 +103,8 @@ class Filter extends React.Component {
                       }
                     >
                       <option value="">Choose...</option>
-                      {postcodes.map(pc => (
-                        <option value={pc.toLowerCase()}>{pc}</option>
+                      {postcodes.map((pc, idx) => (
+                        <option  key={idx} value={pc.toLowerCase()}>{pc}</option>
                       ))}
                     </select>
                   </div>
@@ -127,8 +127,8 @@ class Filter extends React.Component {
                       }
                     >
                       <option value="">Choose...</option>
-                      {sortOrders.map(order => (
-                        <option value={getSortOrderValue(order)}>{order}</option>
+                      {sortOrders.map((order, idx) => (
+                        <option key={idx} value={getSortOrderValue(order)}>{order}</option>
                       ))}
                     </select>
                   </div>

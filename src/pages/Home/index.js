@@ -25,8 +25,8 @@ function Home() {
                     .filter((item, i, arr) => arr.indexOf(item) === i)}
                 />
                 <div className="columns">
-                  {propertyListings.map(listing => (
-                    <Listing listing={listing} />
+                  {propertyListings.map( (listing,idx)  => (
+                    <Listing listing={listing} key={idx}/>
                   ))}
                 </div>
               </>

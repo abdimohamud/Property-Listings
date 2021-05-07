@@ -31518,8 +31518,9 @@ var Filter = /*#__PURE__*/function (_React$Component) {
         }
       }, /*#__PURE__*/React.createElement("option", {
         value: ""
-      }, "Choose..."), postcodes.map(function (pc) {
+      }, "Choose..."), postcodes.map(function (pc, idx) {
         return /*#__PURE__*/React.createElement("option", {
+          key: idx,
           value: pc.toLowerCase()
         }, pc);
       }))))), /*#__PURE__*/React.createElement("div", {
@@ -31542,8 +31543,9 @@ var Filter = /*#__PURE__*/function (_React$Component) {
         }
       }, /*#__PURE__*/React.createElement("option", {
         value: ""
-      }, "Choose..."), sortOrders.map(function (order) {
+      }, "Choose..."), sortOrders.map(function (order, idx) {
         return /*#__PURE__*/React.createElement("option", {
+          key: idx,
           value: getSortOrderValue(order)
         }, order);
       })))))))));
@@ -31636,9 +31638,10 @@ function Home() {
       })
     }), /*#__PURE__*/React.createElement("div", {
       className: "columns"
-    }, propertyListings.map(function (listing) {
+    }, propertyListings.map(function (listing, idx) {
       return /*#__PURE__*/React.createElement(_listing.default, {
-        listing: listing
+        listing: listing,
+        key: idx
       });
     })));
   }))));
@@ -31971,7 +31974,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54287" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49652" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
